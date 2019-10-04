@@ -67,7 +67,8 @@ const insertEventSQL = "" +
 	") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 
 const selectEventsSQL = "" +
-	"SELECT id, event_json FROM syncapi_output_room_events WHERE event_id = ANY($1)"
+	"SELECT id, event_json, device_id, transaction_id" +
+	" FROM syncapi_output_room_events WHERE event_id = ANY($1)"
 
 const selectRecentEventsSQL = "" +
 	"SELECT id, event_json, session_id, transaction_id FROM syncapi_output_room_events" +
@@ -173,7 +174,6 @@ func (s *outputRoomEventsStatements) selectStateInRange(
 			}).Warn("StateBetween: ignoring deleted state")
 		}
 
-		// TODO: Handle redacted events
 		ev, err := gomatrixserverlib.NewEventFromTrustedJSON(eventBytes, false)
 		if err != nil {
 			return nil, nil, err
@@ -304,7 +304,6 @@ func rowsToStreamEvents(rows *sql.Rows) ([]streamEvent, error) {
 		if err := rows.Scan(&streamPos, &eventBytes, &sessionID, &txnID); err != nil {
 			return nil, err
 		}
-		// TODO: Handle redacted events
 		ev, err := gomatrixserverlib.NewEventFromTrustedJSON(eventBytes, false)
 		if err != nil {
 			return nil, err

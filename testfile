@@ -182,3 +182,6 @@ Regular users cannot create room aliases within the AS namespace
 Deleting a non-existent alias should return a 404
 Users can't delete other's aliases
 Outbound federation can query room alias directory
+POST /rooms/:room_id/redact/:event_id as original message sender redacts message
+POST /rooms/:room_id/redact/:event_id as random user does not redact message
+POST /redact disallows redaction of event in different room
