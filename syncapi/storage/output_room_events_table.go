@@ -71,7 +71,8 @@ const selectEventsSQL = "" +
 	" FROM syncapi_output_room_events WHERE event_id = ANY($1)"
 
 const selectRecentEventsSQL = "" +
-	"SELECT id, event_json, session_id, transaction_id FROM syncapi_output_room_events" +
+	"SELECT id, event_json, session_id, transaction_id" +
+	" FROM syncapi_output_room_events" +
 	" WHERE room_id = $1 AND id > $2 AND id <= $3" +
 	" ORDER BY id DESC LIMIT $4"
 
