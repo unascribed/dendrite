@@ -17,7 +17,7 @@ import (
 func SendToDevice(
 	req *http.Request,
 	sender string,
-	syncDB *storage.SyncServerDatabase,
+	syncDB *storage.SyncServerDatasource,
 	deviceDB *devices.Database,
 	eventType, txnID string,
 	notifier *sync.Notifier,
@@ -58,7 +58,9 @@ func SendToDevice(
 				deviceCollection, err = deviceDB.GetDevicesByLocalpart(ctx, localpart)
 				for _, val := range deviceCollection {
 					pos, err = syncDB.InsertStdMessage(ctx, ev, txnID, uid, val.ID)
-					notifier.OnNewEvent(nil, uid, types.StreamPosition(pos))
+					var spos types.SyncPosition
+					spos.PDUPosition = pos
+					notifier.OnNewEvent(nil, uid, nil, spos)
 				}
 				if err != nil {
 					return util.JSONResponse{
@@ -78,7 +80,9 @@ func SendToDevice(
 					JSON: struct{}{},
 				}
 			}
-			notifier.OnNewEvent(nil, uid, types.StreamPosition(pos))
+			var spos types.SyncPosition
+			spos.PDUPosition = pos
+			notifier.OnNewEvent(nil, uid, nil, spos)
 		}
 	}
 

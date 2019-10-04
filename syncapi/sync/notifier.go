@@ -45,7 +45,7 @@ type Notifier struct {
 
 // NewNotifier creates a new notifier set to the given sync position.
 // In order for this to be of any use, the Notifier needs to be told all rooms and
-// the joined users within each of them by calling Notifier.Load(*storage.SyncServerDatabase).
+// the joined users within each of them by calling Notifier.Load(*storage.SyncServerDatasource).
 func NewNotifier(pos types.SyncPosition) *Notifier {
 	return &Notifier{
 		currPos:             pos,

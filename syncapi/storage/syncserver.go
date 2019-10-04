@@ -51,7 +51,7 @@ type streamEvent struct {
 	transactionID  *api.TransactionID
 }
 
-// SyncServerDatabase represents a sync server datasource which manages
+// SyncServerDatasource represents a sync server datasource which manages
 // both the database for PDUs and caches for EDUs.
 type SyncServerDatasource struct {
 	db *sql.DB
@@ -266,10 +266,10 @@ func (d *SyncServerDatasource) syncPositionTx(
 	}
 	maxStdID, err := d.stdMsg.selectMaxStdID(ctx, txn)
 	if err != nil {
-		return 0, err
+		return sp, err
 	}
-	if maxStdID > maxID {
-		maxID = maxStdID
+	if maxStdID > maxEventID {
+		maxEventID = maxStdID
 	}
 	sp.PDUPosition = maxEventID
 
@@ -1196,7 +1196,7 @@ del / maxID / select in range / insert
 */
 
 // DelStdMessage delete message for a given maxID, those below would be deleted
-func (d *SyncServerDatabase) DelStdMessage(
+func (d *SyncServerDatasource) DelStdMessage(
 	ctx context.Context, targetUID, targetDevice string, maxID int64,
 ) (err error) {
 	err = common.WithTransaction(d.db, func(txn *sql.Tx) error {
@@ -1207,7 +1207,7 @@ func (d *SyncServerDatabase) DelStdMessage(
 }
 
 // InsertStdMessage insert std message
-func (d *SyncServerDatabase) InsertStdMessage(
+func (d *SyncServerDatasource) InsertStdMessage(
 	ctx context.Context, stdEvent types.StdHolder, transactionID, targetUID, targetDevice string,
 ) (pos int64, err error) {
 	err = common.WithTransaction(d.db, func(txn *sql.Tx) error {
@@ -1219,7 +1219,7 @@ func (d *SyncServerDatabase) InsertStdMessage(
 }
 
 // SelectMaxStdID select maximum id in std stream
-func (d *SyncServerDatabase) SelectMaxStdID(
+func (d *SyncServerDatasource) SelectMaxStdID(
 	ctx context.Context,
 ) (maxID int64, err error) {
 	err = common.WithTransaction(d.db, func(txn *sql.Tx) error {
@@ -1231,7 +1231,7 @@ func (d *SyncServerDatabase) SelectMaxStdID(
 }
 
 // SelectRangedStd select a range of std messages
-func (d *SyncServerDatabase) SelectRangedStd(
+func (d *SyncServerDatasource) SelectRangedStd(
 	ctx context.Context,
 	targetUserID, targetDeviceID string,
 	endPos int64,
@@ -1247,7 +1247,7 @@ func (d *SyncServerDatabase) SelectRangedStd(
 // StdEXT : send to device extension process
 func StdEXT(
 	ctx context.Context,
-	syncDB *SyncServerDatabase,
+	syncDB *SyncServerDatasource,
 	respIn types.Response,
 	userID, deviceID string,
 	since int64,

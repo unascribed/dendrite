@@ -22,7 +22,7 @@ import (
 	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
 	"github.com/matrix-org/dendrite/clientapi/auth/storage/devices"
 	"github.com/matrix-org/dendrite/common"
-	"github.com/matrix-org/dendrite/encryptoapi/storage"
+	encryptoapi "github.com/matrix-org/dendrite/encryptoapi/storage"
 	"github.com/matrix-org/dendrite/syncapi/storage"
 	"github.com/matrix-org/dendrite/syncapi/sync"
 	"github.com/matrix-org/util"
@@ -36,7 +36,7 @@ const pathPrefixUnstable = "/_matrix/client/unstable"
 // Due to Setup being used to call many other functions, a gocyclo nolint is
 // applied:
 // nolint: gocyclo
-func Setup(apiMux *mux.Router, srp *sync.RequestPool, syncDB *storage.SyncServerDatabase, deviceDB *devices.Database, notifier *sync.Notifier, encryptDB *encryptoapi.Database) {
+func Setup(apiMux *mux.Router, srp *sync.RequestPool, syncDB *storage.SyncServerDatasource, deviceDB *devices.Database, notifier *sync.Notifier, encryptDB *encryptoapi.Database) {
 	r0mux := apiMux.PathPrefix(pathPrefixR0).Subrouter()
 	unstablemux := apiMux.PathPrefix(pathPrefixUnstable).Subrouter()
 

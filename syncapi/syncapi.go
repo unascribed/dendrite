@@ -24,7 +24,7 @@ import (
 	"github.com/matrix-org/dendrite/roomserver/api"
 
 	"github.com/matrix-org/dendrite/clientapi/auth/storage/devices"
-	"github.com/matrix-org/dendrite/encryptoapi/storage"
+	encryptoapi "github.com/matrix-org/dendrite/encryptoapi/storage"
 	"github.com/matrix-org/dendrite/syncapi/consumers"
 	"github.com/matrix-org/dendrite/syncapi/routing"
 	"github.com/matrix-org/dendrite/syncapi/storage"

@@ -22,7 +22,7 @@ import (
 	"github.com/matrix-org/dendrite/clientapi/auth/storage/accounts"
 	"github.com/matrix-org/dendrite/clientapi/httputil"
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
-	"github.com/matrix-org/dendrite/encryptoapi/storage"
+	encryptoapi "github.com/matrix-org/dendrite/encryptoapi/storage"
 	"github.com/matrix-org/dendrite/syncapi/storage"
 	"github.com/matrix-org/dendrite/syncapi/types"
 	"github.com/matrix-org/gomatrixserverlib"
@@ -45,7 +45,7 @@ func NewRequestPool(db *storage.SyncServerDatasource, n *Notifier, adb *accounts
 // OnIncomingSyncRequest is called when a client makes a /sync request. This function MUST be
 // called in a dedicated goroutine for this request. This function will block the goroutine
 // until a response is ready, or it times out.
-func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *authtypes.Device) util.JSONResponse {
+func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *authtypes.Device, encryptDB *encryptoapi.Database) util.JSONResponse {
 	var syncData *types.Response
 
 	// Extract values from request
@@ -119,7 +119,7 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *authtype
 		syncData, err = rp.currentSyncForUser(*syncReq, currPos)
 
 		// std extension consideration
-		syncData = storage.StdEXT(syncReq.ctx, rp.db, *syncData, syncReq.device.UserID, syncReq.device.ID, int64(currPos))
+		syncData = storage.StdEXT(syncReq.ctx, rp.db, *syncData, syncReq.device.UserID, syncReq.device.ID, currPos.PDUPosition)
 		syncData = KeyCountEXT(syncReq.ctx, encryptDB, *syncData, syncReq.device.UserID, syncReq.device.ID)
 
 		if err != nil {
