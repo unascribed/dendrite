@@ -32,6 +32,7 @@ type statements struct {
 	membershipStatements
 	transactionStatements
 	redactionStatements
+	reservedRoomStatements
 }
 
 func (s *statements) prepare(db *sql.DB) error {
@@ -51,6 +52,7 @@ func (s *statements) prepare(db *sql.DB) error {
 		s.membershipStatements.prepare,
 		s.transactionStatements.prepare,
 		s.redactionStatements.prepare,
+		s.reservedRoomStatements.prepare,
 	} {
 		if err = prepare(db); err != nil {
 			return err
