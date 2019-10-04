@@ -93,6 +93,7 @@ func Redact(
 	if txnID != nil {
 		txnAndDeviceID = &api.TransactionID{
 			TransactionID: *txnID,
+			SessionID:     device.SessionID,
 		}
 	}
 
