@@ -67,7 +67,7 @@ const insertEventSQL = "" +
 	") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 
 const selectEventsSQL = "" +
-	"SELECT id, event_json, device_id, transaction_id" +
+	"SELECT id, event_json" +
 	" FROM syncapi_output_room_events WHERE event_id = ANY($1)"
 
 const selectRecentEventsSQL = "" +
